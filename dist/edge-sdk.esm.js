@@ -109,14 +109,12 @@ function detectNativeBridge() {
     };
   }
 
-  // 4️⃣ iOS WebKit
   if (typeof window !== 'undefined' && 
       window.webkit?.messageHandlers?.NativeConfig) {
     logger$3.success('检测到 iOS WebKit Bridge');
     return createWebKitBridge();
   }
 
-  // 5️⃣ Prompt 方式（旧版 Android）
   if (typeof window !== 'undefined' && window.smartOrderingApp) {
     logger$3.success('检测到 smartOrderingApp (Prompt 模式)');
     return createPromptBridge();
@@ -734,7 +732,7 @@ class EdgeSDK {
 // 创建单例实例
 const instance = new EdgeSDK();
 
-// 将类附加到实例上，便于访问和测试
+
 instance.EdgeSDK = EdgeSDK;
 
 export { instance as default };
