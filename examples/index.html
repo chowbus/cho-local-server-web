@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edge SDK 示例</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .status {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .status-item {
+      margin: 10px 0;
+    }
+    .status-label {
+      font-weight: bold;
+      color: #333;
+    }
+    .status-value {
+      color: #666;
+    }
+    button {
+      background: #007aff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #0051d5;
+    }
+    .log {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 15px;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+    .log-entry {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 Edge SDK 使用示例</h1>
+  
+  <div class="status">
+    <h3>SDK 状态</h3>
+    <div class="status-item">
+      <span class="status-label">初始化状态：</span>
+      <span class="status-value" id="initialized">未初始化</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Local Server 状态：</span>
+      <span class="status-value" id="localStatus">未知</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Bridge 类型：</span>
+      <span class="status-value" id="bridgeType">-</span>
+    </div>
+  </div>
+
+  <div>
+    <button onclick="initSDK()">初始化 SDK</button>
+    <button onclick="checkStatus()">获取状态</button>
+    <button onclick="manualCheck()">手动健康检查</button>
+    <button onclick="destroySDK()">销毁 SDK</button>
+  </div>
+
+  <div class="log" id="log"></div>
+
+  <!-- 引入 Edge SDK -->
+  <script src="../dist/edge-sdk.umd.js"></script>
+  
+  <script>
+    // 现在可以直接使用 EdgeSDK，不需要 .default
+    console.log('EdgeSDK 已加载:', EdgeSDK);
+    
+    // 添加日志显示
+    function addLog(message, type = 'info') {
+      const logDiv = document.getElementById('log');
+      const time = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.textContent = `[${time}] ${message}`;
+      logDiv.appendChild(entry);
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    // 初始化 SDK
+    async function initSDK() {
+      try {
+        addLog('正在初始化 SDK...');
+        
+        await EdgeSDK.init({
+          localServerHealth: 'http://localhost:3000/health',
+          healthCheckInterval: 5000,
+          healthCheckTimeout: 3000,
+          whiteList: ['example.com', 'api.example.com'],
+          blackList: [],
+          enableLog: true
+        });
+        
+        addLog('✅ SDK 初始化成功');
+        updateStatus();
+      } catch (error) {
+        addLog('❌ SDK 初始化失败: ' + error.message, 'error');
+      }
+    }
+
+    // 获取状态
+    function checkStatus() {
+      const status = EdgeSDK.getStatus();
+      addLog('当前状态: ' + JSON.stringify(status, null, 2));
+      updateStatus();
+    }
+
+    // 手动健康检查
+    async function manualCheck() {
+      try {
+        addLog('正在执行手动健康检查...');
+        const isAlive = await EdgeSDK.manualCheck();
+        addLog(`健康检查结果: ${isAlive ? '✅ 可用' : '❌ 不可用'}`);
+        updateStatus();
+      } catch (error) {
+        addLog('❌ 健康检查失败: ' + error.message, 'error');
+      }
+    }
+
+    // 销毁 SDK
+    function destroySDK() {
+      EdgeSDK.destroy();
+      addLog('SDK 已销毁');
+      updateStatus();
+    }
+
+    // 更新状态显示
+    function updateStatus() {
+      const status = EdgeSDK.getStatus();
+      document.getElementById('initialized').textContent = status.initialized ? '已初始化' : '未初始化';
+      document.getElementById('localStatus').textContent = status.isLocalAlive ? '✅ 可用' : '❌ 不可用';
+      document.getElementById('bridgeType').textContent = status.bridgeType;
+    }
+
+    // 监听配置变化事件
+    window.addEventListener('edgesdk:config-change', (event) => {
+      addLog(`配置变化事件: isLocalAlive=${event.detail.isLocalAlive}`);
+      updateStatus();
+    });
+
+    // 监听 Native Bridge 错误事件
+    window.addEventListener('edgesdk:native-error', (event) => {
+      addLog(`❌ Native Bridge 错误: ${event.detail.error.message}`, 'error');
+    });
+
+    // 页面加载完成
+    addLog('页面加载完成，EdgeSDK 已就绪');
+    addLog('提示: 如果需要访问 EdgeSDK 类本身（用于测试），可以使用: EdgeSDK.EdgeSDK');
+    updateStatus();
+  </script>
+</body>
+</html>
+

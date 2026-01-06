@@ -1,0 +1,55 @@
+{
+  "name": "@chowbus/edge-sdk",
+  "version": "1.0.0",
+  "description": "Local Server 健康检查与动态路由 SDK",
+  "type": "module",
+  "main": "dist/edge-sdk.cjs.js",
+  "module": "dist/edge-sdk.esm.js",
+  "browser": "dist/edge-sdk.umd.js",
+  "unpkg": "dist/edge-sdk.umd.min.js",
+  "jsdelivr": "dist/edge-sdk.umd.min.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "npm run clean && rollup -c",
+    "clean": "rm -rf dist",
+    "lint": "eslint src --ext .js",
+    "prepublishOnly": "npm run build",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "keywords": [
+    "edge-sdk",
+    "local-server",
+    "health-check",
+    "dynamic-routing",
+    "native-bridge",
+    "webview"
+  ],
+  "author": "Chowbus Engineering Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chowbus/edge-sdk.git"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-bugfix-firefox-class-in-computed-class-key": "^7.28.5",
+    "@babel/preset-env": "^7.26.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "eslint": "^8.52.0",
+    "rollup": "^4.1.4"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
