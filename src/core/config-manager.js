@@ -36,7 +36,7 @@ class ConfigManager {
     }
 
     // 验证白名单
-    if (!Array.isArray(options.whiteList) || options.whiteList.length === 0) {
+    if (!Array.isArray(options.whiteList)) {
       throw new Error('whiteList 必须是非空数组');
     }
 
@@ -60,7 +60,8 @@ class ConfigManager {
       healthCheckInterval: this.config.healthCheckInterval,
       healthCheckTimeout: this.config.healthCheckTimeout,
       whiteListCount: this.config.whiteList.length,
-      blackListCount: this.config.blackList.length
+      blackListCount: this.config.blackList.length,
+      isLocalServerFirst: this.config.isLocalServerFirst
     });
   }
 
@@ -100,14 +101,21 @@ class ConfigManager {
 
   /**
    * 生成 Native 配置对象
-   * @param {boolean} isLocalAlive 
-   * @returns {Object}
+   * @param {boolean} isLocalAlive - Local Server 是否可用
+   * @returns {Object} Native 配置对象
+   * @returns {string[]} return.whiteList - 白名单列表
+   * @returns {string[]} return.blackList - 黑名单列表
+   * @returns {boolean} return.isAllLocalServer - 是否全部走 Local Server
+   * @returns {boolean} return.isLocalServerFirst - 是否优先走 Local Server
+   * @returns {boolean} return.isLocalServerEnabled - Local Server 心跳是否成功
    */
   generateNativeConfig(isLocalAlive) {
     return {
       whiteList: isLocalAlive ? this.config.whiteList : [],
       blackList: this.config.blackList,
-      isAllLocalServer: isLocalAlive
+      isAllLocalServer: isLocalAlive,
+      isLocalServerFirst: this.config.isLocalServerFirst,
+      isLocalServerEnabled: isLocalAlive
     };
   }
 }

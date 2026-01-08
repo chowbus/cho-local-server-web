@@ -32,6 +32,7 @@ class EdgeSDK {
    * @param {string[]} options.whiteList - 域名白名单
    * @param {string[]} [options.blackList=[]] - 域名黑名单
    * @param {boolean} [options.enableLog=true] - 是否启用日志
+   * @param {boolean} options.isLocalServerFirst - 是否优先使用 Local Server
    * @returns {Promise<void>}
    */
   async init(options = {}) {
