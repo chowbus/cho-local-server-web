@@ -271,8 +271,8 @@
           () => controller.abort(),
           this.config.healthCheckTimeout
         );
-        console.log('开始健康检查');
-        console.log('this.config.localServerHealth', this.config.localServerHealth);
+        logger$2.log('开始健康检查');
+        logger$2.log('this.config.localServerHealth', this.config.localServerHealth);
         const response = await fetch(this.config.localServerHealth, {
           method: 'GET',
           signal: controller.signal,
@@ -283,7 +283,7 @@
         });
 
         clearTimeout(timeoutId);
-        console.log('健康检查结果', response);
+        logger$2.log('健康检查结果', response);
         const isAlive = response.ok;
         const statusChanged = this.isAlive !== isAlive;
 
