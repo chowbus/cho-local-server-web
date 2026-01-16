@@ -27,7 +27,9 @@ export function detectNativeBridge() {
     logger.success('检测到通用 NativeBridge');
     return {
       type: BridgeType.NATIVE_BRIDGE,
-      setRouteConfig: (config) => window.NativeBridge.call('localServerConnectionStatusChanged', config),
+      setRouteConfig: (config) => {
+        return window.NativeBridge.call('localServerConnectionStatusChanged', config)
+      },
       on: (event, handler) => window.NativeBridge.on(event, handler),
       send: (method, data) => window.NativeBridge.send(method, data),
       isNative: () => true
