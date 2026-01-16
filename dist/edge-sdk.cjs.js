@@ -401,10 +401,10 @@ class ConfigManager {
       throw new Error('localServerHealth 是必填参数');
     }
 
-    // 验证白名单
-    if (!Array.isArray(options.whiteList)) {
-      throw new Error('whiteList 必须是非空数组');
-    }
+    // // 验证白名单
+    // if (!Array.isArray(options.whiteList)) {
+    //   throw new Error('whiteList 必须是非空数组');
+    // }
 
     // 合并配置
     this.config = {
