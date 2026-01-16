@@ -35,7 +35,8 @@ class HealthChecker {
         () => controller.abort(),
         this.config.healthCheckTimeout
       );
-
+      console.log('开始健康检查');
+      console.log('this.config.localServerHealth', this.config.localServerHealth);
       const response = await fetch(this.config.localServerHealth, {
         method: 'GET',
         signal: controller.signal,
@@ -46,7 +47,7 @@ class HealthChecker {
       });
 
       clearTimeout(timeoutId);
-
+      console.log('健康检查结果', response);
       const isAlive = response.ok;
       const statusChanged = this.isAlive !== isAlive;
 

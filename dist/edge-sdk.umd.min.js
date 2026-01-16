@@ -271,7 +271,8 @@
           () => controller.abort(),
           this.config.healthCheckTimeout
         );
-
+        console.log('开始健康检查');
+        console.log('this.config.localServerHealth', this.config.localServerHealth);
         const response = await fetch(this.config.localServerHealth, {
           method: 'GET',
           signal: controller.signal,
@@ -282,7 +283,7 @@
         });
 
         clearTimeout(timeoutId);
-
+        console.log('健康检查结果', response);
         const isAlive = response.ok;
         const statusChanged = this.isAlive !== isAlive;
 
@@ -424,7 +425,7 @@
       if (typeof this.config.healthCheckTimeout !== 'number' || this.config.healthCheckTimeout < 500) {
         throw new Error('healthCheckTimeout 必须是大于等于 500 的数字');
       }
-
+      console.log('this.config', this.config.localServerHealth);
       logger$1.log('配置已更新', {
         localServerHealth: this.config.localServerHealth,
         healthCheckInterval: this.config.healthCheckInterval,
